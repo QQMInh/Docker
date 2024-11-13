@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: php_web
+    ports:
+      - "8080:80"  # Kết nối từ localhost:8080 đến container PHP
+    volumes:
+      - ./src:/var/www/html  # Mount mã nguồn PHP
+    depends_on:
+      - db
+
+  db:
+    image: mariadb:latest
+    container_name: mariadb_container
+    environment:
+      MYSQL_ROOT_PASSWORD: minhdeptrai  # Mật khẩu root cho MariaDB
+      MYSQL_DATABASE: dn2ndhome2         # Cơ sở dữ liệu mặc định
+    ports:
+      - "3306:3306"  # Kết nối MariaDB trên cổng mặc định
+    volumes:
+      - mariadb_data:/var/lib/mysql  # Lưu trữ dữ liệu MariaDB
+      - ./dn2ndhome2.sql:/docker-entrypoint-initdb.d/dn2ndhome2.sql # Tự động import dữ liệu
+
+volumes:
+  mariadb_data:
